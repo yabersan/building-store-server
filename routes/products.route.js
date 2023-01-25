@@ -5,7 +5,6 @@ const image = require("../middlewares/file.middleware");
 
 router.post("/", image.single("image"), productsController.addProduct);
 router.post("/email", productsController.sendEmail);
-
-
+router.get("/", productsController.getProducts);
 
 module.exports = router;
