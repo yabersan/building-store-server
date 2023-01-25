@@ -4,6 +4,7 @@ require("dotenv").config();
 const cors = require("cors");
 const morgan = require("morgan");
 
+
 const app = express();
 
 app.use(express.json());
@@ -25,3 +26,5 @@ const connectAndStartServer = async () => {
   }
 };
 connectAndStartServer();
+
+

@@ -91,4 +91,17 @@ module.exports.userController = {
       return res.json(error + " Ошибка при добавлении продукта в корзину.");
     }
   },
+  toUpYourAccount: async (req, res) => {
+    const { id } = req.user;
+    const { sum } = req.body;
+    console.log(sum);
+    try {
+      const user = await User.findById(id);
+      user.capital = sum + user.capital;
+      await user.save();
+      return res.json("Счет пополнен.");
+    } catch (error) {
+      return res.json(error);
+    }
+  },
 };
