@@ -46,7 +46,7 @@ module.exports.userController = {
 
       return res.json(token);
     } catch (error) {
-      res.json(error);
+      res.json(error + "Ошибка при регистрации.");
     }
   },
 
@@ -78,5 +78,17 @@ module.exports.userController = {
       expiresIn: "24h",
     });
     return res.json(token);
+  },
+  addInBasket: async (req, res) => {
+    const { productId, volume } = req.body;
+    const { id } = req.user;
+    try {
+      await User.findByIdAndUpdate(id, {
+        $push: { basket: { productId, volume } },
+      });
+      return res.json("Продукт добавлен в корзину.");
+    } catch (error) {
+      return res.json(error + " Ошибка при добавлении продукта в корзину.");
+    }
   },
 };
