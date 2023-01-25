@@ -3,9 +3,9 @@ const { reviewControllers } = require("../controllers/reviews.controller");
 const router = Router();
 
 
-router.post("/reviews", reviewControllers.addReview);
-router.get("/reviews", reviewControllers.getReviews);
-router.delete("/reviews/:id", reviewControllers.deleteReview);
+router.post("/", reviewControllers.addReview);
+router.get("/", reviewControllers.getReviews);
+router.delete("/:id", reviewControllers.deleteReview);
 
 
 
