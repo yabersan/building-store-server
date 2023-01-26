@@ -5,5 +5,6 @@ const image = require("../middlewares/file.middleware");
 
 router.post("/", image.single("image"), productsController.addProduct);
 router.get("/", productsController.getProducts);
+router.get("/autocomplete", productsController.autocompleteProducts);
 
 module.exports = router;
