@@ -73,4 +73,18 @@ module.exports.productsController = {
       res.json({ error: error.message });
     }
   },
+  autocompleteProducts: async (req, res) => {
+    const searchProduct = req.body;
+    try {
+      const products = await Product.find({
+        title: new RegExp(`${searchProduct}`, "i"),
+      });
+      if (news.length !== 0) {
+        return res.json(products);
+      }
+      return res.json({ error: "По вашему запросу ничего не найдено..." });
+    } catch (error) {
+      return res.json(error);
+    }
+  },
 };
