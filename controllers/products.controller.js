@@ -74,15 +74,6 @@ module.exports.productsController = {
       res.json({ error: error.message });
     }
   },
-  getProducts: async (req, res) => {
-    try {
-      const products = await Product.find();
-      console.log(products);
-      return res.json(products);
-    } catch (error) {
-      res.json({ error: error.message });
-    }
-  },
   autocompleteProducts: async (req, res) => {
     const searchProduct = req.body;
     try {
