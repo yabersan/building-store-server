@@ -9,3 +9,4 @@ router.get("/", productsController.getProducts);
 router.post("/autocomplete", productsController.autocompleteProducts);
 
 module.exports = router;
+
