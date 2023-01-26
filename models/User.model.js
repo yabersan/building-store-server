@@ -13,6 +13,7 @@ const userSchema = mongoose.Schema({
       volume: Number,
     },
   ],
+  capital: Number
 });
 
 const User = mongoose.model("User", userSchema);
