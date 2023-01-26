@@ -79,12 +79,12 @@ module.exports.userController = {
     });
     return res.json(token);
   },
-  addInBasket: async (req, res) => {
+  addInCart: async (req, res) => {
     const { productId, volume } = req.body;
     const { id } = req.user;
     try {
       await User.findByIdAndUpdate(id, {
-        $push: { basket: { productId, volume } },
+        $push: { cart: { productId, volume } },
       });
       return res.json("Продукт добавлен в корзину.");
     } catch (error) {
