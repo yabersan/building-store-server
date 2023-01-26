@@ -63,13 +63,29 @@ module.exports.productsController = {
       return res.json("Форма отправлена.");
     } catch (error) {
       return res.json(error);
-    }},
+    }
+  },
   getProducts: async (req, res) => {
     try {
       const products = await Product.find();
+      console.log(products);
       return res.json(products);
     } catch (error) {
       res.json({ error: error.message });
     }
-  }
-}
+  },
+  autocompleteProducts: async (req, res) => {
+    const searchProduct = req.body;
+    try {
+      const products = await Product.find({
+        title: new RegExp(`${searchProduct}`, "i"),
+      });
+      if (news.length !== 0) {
+        return res.json(products);
+      }
+      return res.json({ error: "По вашему запросу ничего не найдено..." });
+    } catch (error) {
+      return res.json(error);
+    }
+  },
+};
