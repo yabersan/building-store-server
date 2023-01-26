@@ -68,7 +68,6 @@ module.exports.productsController = {
   getProducts: async (req, res) => {
     try {
       const products = await Product.find();
-      console.log(products);
       return res.json(products);
     } catch (error) {
       res.json({ error: error.message });
