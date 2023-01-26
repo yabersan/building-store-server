@@ -9,5 +9,4 @@ router.patch("/cart", authMiddleware, userController.addInCart);
 router.patch("/capital", authMiddleware, userController.toUpYourAccount);
 
 
-
 module.exports = router;
