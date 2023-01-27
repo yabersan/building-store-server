@@ -91,4 +91,49 @@ module.exports.productsController = {
       return res.json(error);
     }
   },
+  sendForm: async (req, res) => {
+    const { name, number, email, text } = req.body;
+    try {
+      const transporter = nodemailer.createTransport({
+        host: "smtp.gmail.com",
+        port: 465,
+        service: "gmail",
+        auth: {
+          user: "tagvu86@gmail.com",
+          pass: "iqboixmopesruuie",
+        },
+      });
+
+      const mailOptions = {
+        from: "tagvu86@gmail.com",
+        to: "tagvu86@gmail.com",
+        subject: "Связь клиента.",
+        text: `
+          Имя: ${name},
+          Номер: ${number},
+          Email: ${email},
+          Сообщение:
+          ${text}
+          
+        `,
+      };
+
+      const mailClientOptions = {
+        from: "tagvu86@gmail.com",
+        to: email,
+        subject: "Спасибо за связь.",
+        text: `
+          Ваше сообщение отправлено админу, скоро он свяжется с вами.
+          
+        `,
+      };
+
+      await transporter.sendMail(mailOptions);
+      await transporter.sendMail(mailClientOptions);
+
+      return res.json("Форма отправлена.");
+    } catch (error) {
+      return res.json(error);
+    }
+  }
 };
