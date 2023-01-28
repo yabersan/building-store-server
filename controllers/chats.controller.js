@@ -12,34 +12,35 @@ module.exports.chatsControllers = {
                 return res.json(chats)
             }else{
                 const chat = await Chat.find({client: id})
-                return res.json(chat)
+                return res.json([chat])
 
             }
-            return res.json("Нет чатов")
+
         } catch (error) {
             return res.json(error)
         }
     },
     sendMessages: async (req, res) => {
-        const { id } = req.user
-        const { text, getterId } = req.body
+        const { id, name } = req.user
+        const { text, clientId} = req.body
         try {
             const user = await User.findById(id)
             console.log(user.login)
             if(user.login === "admin"){
                 
-                const chat = await Chat.findOneAndUpdate({client: getterId}, {
-                    $push: { messages: {text, sender: id} },
+                const chat = await Chat.findOneAndUpdate({client: clientId}, {
+                    $push: { messages: {text, sender: id, name} },
                   });
                 
-                console.log(user.login)
-                return res.json("Сообщение отправлено")
+                const  chat1 = await Chat.find({client: clientId})
+                return res.json(chat1)
             }else{
-                const chat = await Chat.find({client: id})
-                chat.messages = []
-                await chat.save()
-                console.log(user.login)
-                return res.json("Сообщение отправлено")
+                const chat = await Chat.findOneAndUpdate({client: id}, {
+                    $push: { messages: {text, sender: id, name} },
+                  });
+                const  chat1 = await Chat.find({client: id})
+                
+                return res.json(chat1)
 
             }
             
