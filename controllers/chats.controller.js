@@ -12,7 +12,7 @@ module.exports.chatsControllers = {
                 return res.json(chats)
             }else{
                 const chat = await Chat.find({client: id})
-                return res.json([chat])
+                return res.json(chat)
 
             }
 
@@ -51,18 +51,21 @@ module.exports.chatsControllers = {
     },
     newChat: async (req, res) => {
         const {id} = req.user
-        console.log(id)
+
         try {
             const chat = await Chat.find({client: id})
-            if(chat.length > 0){
-                return res.json("Такой чат есть.")
+            const chat1 = await Chat.find({admin: id})
+
+            if(chat.length > 0 || chat1.length > 0){
+                
             }else{
-                await Chat.create({client: id})
-                return res.json("Чат создан.")
+                const chat = await Chat.create({client: id})
+
+                return res.json(chat)
             }
             
         } catch (error) {
-            return res.json(error)
+            return res.json(error + "Ошибка на ") 
         }
     },
 }
