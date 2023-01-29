@@ -80,21 +80,38 @@ module.exports.userController = {
     return res.json(token);
   },
   addInCart: async (req, res) => {
-    const { productId, volume } = req.body;
+    const { productId, count } = req.body;
     const { id } = req.user;
+    const findUser = await User.findById(id);
+    const userCart = findUser.cart;
+
+    const findProduct = userCart.filter((item) => {
+      return userCart[0].productId.toString() === productId._id;
+    });
     try {
-      await User.findByIdAndUpdate(id, {
-        $push: { cart: { productId, volume } },
-      });
-      return res.json("Продукт добавлен в корзину.");
+      if (findProduct.length === 0) {
+        const cart = await User.findByIdAndUpdate(id, {
+          $push: { cart: { productId, count } },
+        });
+        return res.json(cart);
+      }
+      return res.json({ error: "Товар есть уже в корзине" });
     } catch (error) {
       return res.json(error + " Ошибка при добавлении продукта в корзину.");
+    }
+  },
+  getInCart: async (req, res) => {
+    const { id } = req.user;
+    try {
+      const findUser = await User.findById(id);
+      return res.json(findUser)
+    } catch (error) {
+      return res.json(error + "Отображение корзины невозможно");
     }
   },
   toUpYourAccount: async (req, res) => {
     const { id } = req.user;
     const { sum } = req.body;
-    console.log(sum);
     try {
       const user = await User.findById(id);
       user.capital = sum + user.capital;
