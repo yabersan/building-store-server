@@ -22,21 +22,21 @@ module.exports.chatsControllers = {
     },
     sendMessages: async (req, res) => {
         const { id, name } = req.user
-        const { text, clientId} = req.body
+        const { text, clientId, date} = req.body
         try {
             const user = await User.findById(id)
             console.log(user.login)
             if(user.login === "admin"){
                 
                 const chat = await Chat.findOneAndUpdate({client: clientId}, {
-                    $push: { messages: {text, sender: id, name} },
+                    $push: { messages: {text, sender: id, name, date} },
                   });
                 
                 const  chat1 = await Chat.find({client: clientId})
                 return res.json(chat1)
             }else{
                 const chat = await Chat.findOneAndUpdate({client: id}, {
-                    $push: { messages: {text, sender: id, name} },
+                    $push: { messages: {text, sender: id, name, date} },
                   });
                 const  chat1 = await Chat.find({client: id})
                 
