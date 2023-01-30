@@ -68,4 +68,40 @@ module.exports.chatsControllers = {
             return res.json(error + "Ошибка на ") 
         }
     },
+    getNewMessage: async (req, res) => {
+        const {id} = req.user
+        console.log(id)
+        try {
+            const user = await User.findById(id)
+            let bol = false
+            if(user.login === "admin"){
+                const chats = await Chat.find()
+                while(bol === false){
+                    const newChats = await Chat.find()
+
+                    if(JSON.stringify(chats) !== JSON.stringify(newChats)){
+                        bol = true
+                    } 
+
+                }
+                const newChats = await Chat.find()
+                return res.json(newChats)
+            }else{
+                const chat = await Chat.find({client: id})
+
+                while(bol === false){
+                    const newChat = await Chat.find({client: id})
+
+                    if(JSON.stringify(chat) !== JSON.stringify(newChat)){
+                        bol = true
+                    } 
+                }
+                const newChat = await Chat.find({client: id})
+                return res.json(newChat)
+            }
+
+        } catch (error) {
+            return res.json(error)
+        }
+    }
 }
