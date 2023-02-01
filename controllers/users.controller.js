@@ -80,31 +80,77 @@ module.exports.userController = {
     return res.json(token);
   },
   addInCart: async (req, res) => {
-    const { productId, count } = req.body;
+    const { product, count } = req.body;
+    const productId = product._id;
     const { id } = req.user;
     const findUser = await User.findById(id);
     const userCart = findUser.cart;
-
     const findProduct = userCart.filter((item) => {
-      return userCart[0].productId.toString() === productId._id;
+      return item.productId.toString() === product._id;
     });
     try {
       if (findProduct.length === 0) {
         const cart = await User.findByIdAndUpdate(id, {
           $push: { cart: { productId, count } },
         });
-        return res.json(cart);
+        const user = await User.findById(id).populate("cart.productId");
+        return res.json(user.cart);
       }
       return res.json({ error: "Товар есть уже в корзине" });
     } catch (error) {
       return res.json(error + " Ошибка при добавлении продукта в корзину.");
     }
   },
-  getInCart: async (req, res) => {
+
+  removeProductInCart: async (req, res) => {
     const { id } = req.user;
+    const { productId } = req.body;
     try {
       const findUser = await User.findById(id);
-      return res.json(findUser)
+
+      const findInUserCart = findUser.cart.filter((product) => {
+        return product.productId.toString() !== productId;
+      });
+      await User.findByIdAndUpdate(id, {
+        cart: [...findInUserCart],
+      });
+      const user = await User.findById(id).populate("cart.productId");
+      return res.json(user.cart);
+    } catch (error) {
+      return res.json(error + " Ошибка удаления из корзины");
+    }
+  },
+
+  getInCart: async (req, res) => {
+    const { id } = req.user;
+    const { local } = req.body;
+    try {
+      const findUser = await User.findById(id);
+      const userCart = findUser.cart;
+      const findInUserCart = local.filter((product) => {
+        const find = userCart.filter((item) => {
+          return item.productId.toString() === product._id;
+        });
+        if (find.length === 0) {
+          return product;
+        }
+        return product === 0;
+      });
+      if (findInUserCart.length > 0) {
+        const cartFilter = findInUserCart.map((item) => {
+          return {
+            productId: item._id,
+            count: item.count,
+          };
+        });
+        await User.findByIdAndUpdate(id, {
+          cart: [...userCart, ...cartFilter],
+        });
+        const findUserCart = await User.findById(id).populate("cart.productId");
+        return res.json(findUserCart.cart);
+      }
+      const user = await User.findById(id).populate("cart.productId");
+      return res.json(user.cart);
     } catch (error) {
       return res.json(error + "Отображение корзины невозможно");
     }
